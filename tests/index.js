@@ -14,10 +14,12 @@ describe('JWT Token ...', () => {
     it('should match original payload', () => {
 
         const issuerName = 'Storyous s.r.o.';
+        const expiresInSec = 120;
 
         const config = {
             issuer: issuerName,
-            privateKey: fs.readFileSync(`${__dirname}/cert/test.key`).toString()
+            privateKey: fs.readFileSync(`${__dirname}/cert/test.key`).toString(),
+            expiresInSec
         };
 
         const restriction = new Restriction('merchantId', 123);
@@ -50,6 +52,7 @@ describe('JWT Token ...', () => {
             ]
         };
 
+        assert.equal(decodedToken.exp - expiresInSec, decodedToken.iat);
         assert.equal(expected.merchantId, decodedToken.merchantId);
         assert.deepEqual(expected.scopes, decodedToken.scopes);
 

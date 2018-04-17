@@ -23,6 +23,10 @@ class JWTIssuer {
             issuer: this._config.issuer
         };
 
+        if (typeof this._config.expiresInSec !== 'undefined') {
+            options['expiresIn'] = this._config.expiresInSec;
+        }
+
         payload['scopes'] = scopes.map((scope) => (scope.toArray()));
 
         return JWT.sign(payload, this._config.privateKey, options);
@@ -38,7 +42,7 @@ class JWTIssuer {
                 type: 'string',
                 required: 'true'
             },
-            ttl: {
+            expiresInSec: {
                 type: 'number',
                 required: false
             }
