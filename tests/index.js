@@ -1,10 +1,7 @@
 'use strict';
 
 const { describe, it } = require('mocha');
-const JWTIssuer = require('../src/JWTIssuer');
-const JWTVerifier = require('../src/JWTVerifier');
-const Restriction = require('../src/Restriction');
-const Scope = require('../src/Scope');
+const { JWTIssuer, JWTVerifier, Restriction, Scope } = require('../src');
 const fs = require('fs');
 const assert = require('assert');
 const JsonWebTokenError = require('jsonwebtoken/lib/JsonWebTokenError');

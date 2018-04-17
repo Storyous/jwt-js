@@ -1,9 +1,9 @@
 "use strict";
 
-const JWTIssuer = require('./src/JWTIssuer');
-const JWTVerifier = require('./src/JWTVerifier');
-const Restriction = require('./src/Restriction');
-const Scope = require('./src/Scope');
+const JWTIssuer = require('./JWTIssuer');
+const JWTVerifier = require('./JWTVerifier');
+const Restriction = require('./Restriction');
+const Scope = require('./Scope');
 
 module.exports = {
     JWTIssuer,
