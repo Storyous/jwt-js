@@ -1,0 +1,22 @@
+{
+  "name": "storyous-jwt",
+  "version": "1.0.0",
+  "private": false,
+  "main": "src/index.js",
+  "scripts": {
+    "test": "./node_modules/mocha/bin/_mocha --recursive ./tests"
+  },
+  "engines": {
+    "node": "8.10.0",
+    "npm": "5.6.0"
+  },
+  "dependencies": {
+    "jsonwebtoken": "^8.2.1",
+    "validate": "^4.3.0"
+  },
+  "description": "Storyous JWT MVP wrapper for testing",
+  "devDependencies": {
+    "eslint": "^4.19.1",
+    "mocha": "^5.1.0"
+  }
+}
