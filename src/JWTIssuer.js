@@ -18,7 +18,6 @@ class JWTIssuer {
      * @param {Scope[]} scopes
      */
     createToken(payload, scopes) {
-        const privateKey = fs.readFileSync(this._config.privateKeyPath);
         const options = {
             algorithm: JWTIssuer.algorithm,
             issuer: this._config.issuer
@@ -26,7 +25,7 @@ class JWTIssuer {
 
         payload['scopes'] = scopes.map((scope) => (scope.toArray()));
 
-        return JWT.sign(payload, privateKey, options);
+        return JWT.sign(payload, this._config.privateKey, options);
     }
 
     static _validateConfig(config) {
@@ -35,7 +34,7 @@ class JWTIssuer {
                 type: 'string',
                 required: 'true'
             },
-            privateKeyPath: {
+            privateKey: {
                 type: 'string',
                 required: 'true'
             },

@@ -17,7 +17,7 @@ describe('JWT Token ...', () => {
 
         const config = {
             issuer: issuerName,
-            privateKeyPath: `${__dirname}/cert/test.key`
+            privateKey: fs.readFileSync(`${__dirname}/cert/test.key`).toString()
         };
 
         const restriction = new Restriction('merchantId', 123);
@@ -61,7 +61,7 @@ describe('JWT Token ...', () => {
 
         const config = {
             issuer: issuerName,
-            privateKeyPath: `${__dirname}/cert/test.key`
+            privateKey: fs.readFileSync(`${__dirname}/cert/test.key`).toString()
         };
 
         const restriction = new Restriction('merchantId', 123);
