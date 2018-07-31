@@ -4,7 +4,7 @@
   "private": false,
   "main": "src/index.js",
   "scripts": {
-    "test": "./node_modules/mocha/bin/_mocha --recursive ./tests"
+    "test": "node ./node_modules/mocha/bin/_mocha --recursive ./tests"
   },
   "engines": {
     "node": "8.10.0",
