@@ -1,5 +1,5 @@
 {
-  "name": "storyous-jwt",
+  "name": "@storyous/storyous-jwt",
   "version": "1.0.0",
   "private": false,
   "main": "src/index.js",
