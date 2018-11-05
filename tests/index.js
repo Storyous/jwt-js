@@ -23,13 +23,14 @@ describe('JWT Token ...', () => {
         const restriction2 = new Restriction('placeId', 987);
         const scope1 = new Scope('terms', [restriction, restriction2], true, true);
         const scope2 = new Scope('djapi', [restriction], true, false);
+        const scopes = [scope1, scope2];
 
         const issuer = new JWTIssuer(config);
 
         const payload = {
             merchantId: 456
         };
-        const token = issuer.createToken(payload, [scope1, scope2]);
+        const token = issuer.createToken(payload, scopes);
 
         const verifierConf = {
             issuer: issuerName,
@@ -43,15 +44,12 @@ describe('JWT Token ...', () => {
 
         const expected = {
             merchantId: 456,
-            scopes: [
-                ["terms", "rw", { "merchantId": 123, "placeId":987 }],
-                ["djapi", "r", { "merchantId": 123 }]
-            ]
+            scopes
         };
 
-        assert.equal(decodedToken.exp - expiresInSec, decodedToken.iat);
-        assert.equal(expected.merchantId, decodedToken.merchantId);
-        assert.deepEqual(expected.scopes, decodedToken.scopes);
+        assert.equal(decodedToken.iat, decodedToken.exp - expiresInSec);
+        assert.equal(decodedToken.merchantId, expected.merchantId);
+        assert.deepEqual(decodedToken.scopes, expected.scopes);
 
     });
 
