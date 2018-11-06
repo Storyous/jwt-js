@@ -1,4 +1,5 @@
 "use strict";
+const Restriction = require('./Restriction');
 
 class Scope {
 
@@ -49,6 +50,18 @@ class Scope {
      */
     toArray() {
         return [this.resource, this.permissions, this.formattedRestrictions];
+    }
+
+    /**
+     *
+     * @param array
+     * @returns {Scope}
+     */
+    static fromArray(array) {
+        const restrictions = Object.entries(array[2]).map(([field, value]) => {
+            return new Restriction(field, value)
+        });
+        return new Scope(array[0], restrictions, array[1].includes('r'), array[1].includes('w'))
     }
 
     /**
