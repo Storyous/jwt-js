@@ -6,7 +6,7 @@ const fs = require('fs');
 const assert = require('assert');
 const JsonWebTokenError = require('jsonwebtoken/lib/JsonWebTokenError');
 
-describe('JWT Token ...', () => {
+describe('JWT Token', () => {
 
     it('should match original payload', () => {
 
@@ -44,7 +44,10 @@ describe('JWT Token ...', () => {
 
         const expected = {
             merchantId: 456,
-            scopes
+            scopes: [
+                ["terms", "rw", { "merchantId": 123, "placeId": 987 }],
+                ["djapi", "r", { "merchantId": 123 }]
+            ]
         };
 
         assert.equal(decodedToken.iat, decodedToken.exp - expiresInSec);

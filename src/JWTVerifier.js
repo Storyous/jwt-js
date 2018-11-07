@@ -2,7 +2,6 @@
 
 const Schema = require('validate');
 const JWT = require('jsonwebtoken');
-const Scope = require('./Scope');
 
 const algorithm = 'RS256';
 
@@ -26,9 +25,7 @@ class JWTVerifier {
 
         JWT.verify(token, this._config.publicKey, options);
 
-        const decodedToken = JWT.decode(token, options);
-        decodedToken.scopes = decodedToken.scopes.map(Scope.fromArray);
-        return decodedToken;
+        return JWT.decode(token, options);
     }
 
     static _validateConfig(config) {

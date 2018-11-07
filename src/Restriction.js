@@ -4,7 +4,7 @@ class Restriction {
 
     /**
      * @param {string} field
-     * @param {number|string} value
+     * @param {number|string|Array<number|string>} value
      */
     constructor(field, value) {
         this._field = field;
