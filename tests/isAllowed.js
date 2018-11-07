@@ -82,14 +82,26 @@ describe('isAllowed', () => {
 
     testCases.forEach(({ scopes, resource, restrictions, expect }, i) => {
 
+        let fn = it;
+        const multipleRestrictions = restrictions && Object.keys(restrictions) > 1;
+        const multipleScopes = scopes.some(scope => scope.restrictions.length > 1);
+        const shouldThrow = multipleRestrictions || multipleScopes;
+
         /*// UNCOMMENT TO TEST SINGLE CASE
         if ((i + 1) !== 4) {
             return;
         }*/
 
-        it(`should work for case ${ i + 1 }`, () => {
+        fn(`should work for case ${ i + 1 }`, () => {
             const encodedScopes = scopes.map(scope => scope.toArray());
-            assert.equal(isAllowed(encodedScopes, resource, restrictions), expect);
+
+            if (!shouldThrow) {
+                assert.equal(isAllowed(encodedScopes, resource, restrictions), expect);
+            } else {
+                assert.throws(() => {
+                    isAllowed(encodedScopes, resource, restrictions);
+                });
+            }
         });
 
     });

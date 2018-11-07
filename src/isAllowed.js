@@ -25,6 +25,13 @@ function isScopeRestrictionOK (scopeRestrictionName, scopeRestrictionValue, targ
  */
 function isAllowed (scopes, targetResource, targetRestrictions = {}) {
 
+    const multipleTargetRestrictions = Object.keys(targetRestrictions).length > 1;
+    const multipleRestrictions = scopes.some(scope => Object.keys(scope[2]).length > 1);
+
+    if (multipleTargetRestrictions || multipleRestrictions) {
+        throw Error('Multiple restrictions not implemented yet');
+    }
+
     return scopes.some(([scopeResource, methods, scopeRestrictions]) => {
 
         if (scopeResource !== targetResource) {
