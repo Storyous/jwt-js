@@ -16,20 +16,24 @@ class JWTIssuer {
     /**
      * @param {object}  payload
      * @param {Scope[]} scopes
+     * @param {{ expiresInSec?: number }} [options]
      */
-    createToken(payload, scopes) {
-        const options = {
+    createToken(payload, scopes, options = {}) {
+        const finalOptions = {
             algorithm: JWTIssuer.algorithm,
             issuer: this._config.issuer
         };
 
-        if (typeof this._config.expiresInSec !== 'undefined') {
-            options['expiresIn'] = this._config.expiresInSec;
+        if (typeof options.expiresInSec !== 'undefined') {
+            finalOptions['expiresIn'] = options.expiresInSec;
+
+        } else if (typeof this._config.expiresInSec !== 'undefined') {
+            finalOptions['expiresIn'] = this._config.expiresInSec;
         }
 
         payload['scopes'] = scopes.map((scope) => (scope.toArray()));
 
-        return JWT.sign(payload, this._config.privateKey, options);
+        return JWT.sign(payload, this._config.privateKey, finalOptions);
     }
 
     static _validateConfig(config) {
