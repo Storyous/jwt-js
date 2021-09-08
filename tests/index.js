@@ -56,6 +56,35 @@ describe('JWT Token', () => {
 
     });
 
+    it('should be possible to specify expiration for each token', () => {
+
+        const issuerName = 'Storyous s.r.o.';
+        const expiresInSec = 120;
+        const expiresInSec2 = 3600;
+
+        const config = {
+            issuer: issuerName,
+            privateKey: fs.readFileSync(`${__dirname}/cert/test.key`).toString(),
+            expiresInSec
+        };
+
+        const issuer = new JWTIssuer(config);
+        const token = issuer.createToken({}, [], { expiresInSec: expiresInSec2 });
+
+        const verifierConf = {
+            issuer: issuerName,
+            algorithm: JWTIssuer.algorithm,
+            publicKey: fs.readFileSync(`${__dirname}/cert/test.pub`).toString()
+        };
+
+        const verifier = new JWTVerifier(verifierConf);
+
+        let decodedToken = verifier.verifyAndDecodeToken(token);
+
+        assert.equal(decodedToken.iat, decodedToken.exp - expiresInSec2);
+
+    });
+
     it('should fail due to invalid public key', () => {
 
         const issuerName = 'Storyous s.r.o.';
