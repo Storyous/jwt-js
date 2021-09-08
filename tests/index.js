@@ -21,8 +21,8 @@ describe('JWT Token', () => {
 
         const restriction = new Restriction('merchantId', 123);
         const restriction2 = new Restriction('placeId', 987);
-        const scope1 = new Scope('terms', [restriction, restriction2], true, true);
-        const scope2 = new Scope('djapi', [restriction], true, false);
+        const scope1 = new Scope('terms', [restriction, restriction2], 'rw');
+        const scope2 = new Scope('djapi', [restriction], 'r');
         const scopes = [scope1, scope2];
 
         const issuer = new JWTIssuer(config);
@@ -96,8 +96,8 @@ describe('JWT Token', () => {
 
         const restriction = new Restriction('merchantId', 123);
         const restriction2 = new Restriction('placeId', 987);
-        const scope1 = new Scope('terms', [restriction, restriction2], true, true);
-        const scope2 = new Scope('djapi', [restriction], true, false);
+        const scope1 = new Scope('terms', [restriction, restriction2], 'rw');
+        const scope2 = new Scope('djapi', [restriction], 'r');
 
         const issuer = new JWTIssuer(config);
 

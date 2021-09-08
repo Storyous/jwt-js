@@ -7,14 +7,12 @@ class Scope {
      *
      * @param {string} resource
      * @param {Restriction[]} restrictions
-     * @param {boolean} read
-     * @param {boolean} write
+     * @param {string} permissions
      */
-    constructor (resource, restrictions, read = true, write = false) {
+    constructor (resource, restrictions, permissions) {
         this._resource = resource;
         this._restrictions = restrictions;
-        this._read = read;
-        this._write = write;
+        this._permissions = permissions;
     }
 
     /**
@@ -32,17 +30,10 @@ class Scope {
     }
 
     /**
-     * @returns {boolean}
+     * @returns {string}
      */
-    get read () {
-        return this._read;
-    }
-
-    /**
-     * @returns {boolean}
-     */
-    get write () {
-        return this._write;
+    get permissions () {
+        return this._permissions;
     }
 
     /**
@@ -50,23 +41,6 @@ class Scope {
      */
     toArray () {
         return [this.resource, this.permissions, this.formattedRestrictions];
-    }
-
-    /**
-     * @returns {string}
-     */
-    get permissions () {
-        let str = '';
-
-        if (this.read) {
-            str = `${str}r`;
-        }
-
-        if (this.write) {
-            str = `${str}w`;
-        }
-
-        return str;
     }
 
     get formattedRestrictions () {
