@@ -1,8 +1,9 @@
 {
   "name": "@storyous/storyous-jwt",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "private": false,
-  "main": "src/index.js",
+  "main": "./src/index.js",
+  "types": "./types/index.d.ts",
   "scripts": {
     "test": "node ./node_modules/mocha/bin/_mocha --recursive ./tests"
   },
