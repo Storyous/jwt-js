@@ -13,7 +13,7 @@ declare class JWTVerifier {
 declare class JWTIssuer {
     constructor (config: {issuer: string, privateKey: string, expiresInSec?: number});
 
-    createToken(payload: object, scopes: Scope[], options: {expiresInSec?: number});
+    createToken(payload: object, scopes: Scope[], options?: {expiresInSec: number});
 
     static get algorithm(): string;
 }
