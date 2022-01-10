@@ -1,7 +1,6 @@
 "use strict";
 
 const Schema = require('validate');
-const fs = require('fs');
 const JWT = require('jsonwebtoken');
 
 const algorithm = 'RS256';
@@ -16,15 +15,15 @@ class JWTIssuer {
     /**
      * @param {object}  payload
      * @param {Scope[]} scopes
-     * @param {{ expiresInSec?: number }} [options]
+     * @param {{ expiresInSec: number }} [options]
      */
-    createToken(payload, scopes, options = {}) {
+    createToken(payload, scopes, options) {
         const finalOptions = {
             algorithm: JWTIssuer.algorithm,
             issuer: this._config.issuer
         };
 
-        if (typeof options.expiresInSec !== 'undefined') {
+        if (options && typeof options.expiresInSec !== 'undefined') {
             finalOptions['expiresIn'] = options.expiresInSec;
 
         } else if (typeof this._config.expiresInSec !== 'undefined') {
