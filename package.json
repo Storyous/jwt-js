@@ -12,7 +12,7 @@
     "npm": "5.6.0"
   },
   "dependencies": {
-    "jsonwebtoken": "^8.2.1",
+    "jsonwebtoken": "^9.0.0",
     "validate": "^4.3.0"
   },
   "description": "Storyous JWT MVP wrapper for testing",
