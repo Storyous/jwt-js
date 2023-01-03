@@ -1,6 +1,6 @@
 {
   "name": "@storyous/storyous-jwt",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "private": false,
   "main": "./src/index.js",
   "types": "./types/index.d.ts",
@@ -12,7 +12,7 @@
     "npm": "5.6.0"
   },
   "dependencies": {
-    "jsonwebtoken": "^8.2.1",
+    "jsonwebtoken": "^9.0.0",
     "validate": "^4.3.0"
   },
   "description": "Storyous JWT MVP wrapper for testing",
