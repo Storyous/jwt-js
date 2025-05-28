@@ -1,11 +1,16 @@
-'use strict';
-
-const assert = require('assert');
-const { isAllowed, Scope, Restriction } = require('../src');
+import * as assert from 'assert';
+import { isAllowed, Scope, Restriction } from '../src';
+import { describe, it } from 'mocha';
+import { TargetRestrictions } from '../src/isAllowed';
 
 describe('isAllowed', () => {
 
-    const testCases = [
+    const testCases: {
+        expect: boolean;
+        scopes: Scope[];
+        resource: string;
+        restrictions?: TargetRestrictions
+    }[] = [
 
         { expect: false, scopes: [], resource: 'a', },
 
@@ -16,13 +21,13 @@ describe('isAllowed', () => {
         {
             expect: true,
             resource: 'a', restrictions: { r1: 'v1' },
-            scopes: [new Scope('a', [new Restriction('r1', ['v1', 'v2'])])]
+            scopes: [new Scope('a', [new Restriction('r1', ['v1', 'v2'])], "rw")]
         },
 
         {
             expect: false,
             resource: 'a', restrictions: { r1: 'v3' },
-            scopes: [new Scope('a', [new Restriction('r1', ['v1', 'v2'])])]
+            scopes: [new Scope('a', [new Restriction('r1', ['v1', 'v2'])], "rw")]
         },
 
         {
@@ -31,7 +36,7 @@ describe('isAllowed', () => {
             scopes: [new Scope('a', [
                 new Restriction('r1', ['v1', 'v2']),
                 new Restriction('r2', ['v3', 'v4']),
-            ])]
+            ], "rw")]
         },
 
         {
@@ -40,7 +45,7 @@ describe('isAllowed', () => {
             scopes: [new Scope('a', [
                 new Restriction('r1', ['v1', 'v2']),
                 new Restriction('r2', ['v3', 'v4']),
-            ])]
+            ], "rw")]
         },
 
         {
@@ -49,7 +54,7 @@ describe('isAllowed', () => {
             scopes: [new Scope('a', [
                 new Restriction('r1', ['v1', 'v2']),
                 new Restriction('r2', ['v3', 'v4']),
-            ])]
+            ], "rw")]
         },
 
         {
@@ -58,7 +63,7 @@ describe('isAllowed', () => {
             scopes: [new Scope('a', [
                 new Restriction('r1', ['v1', 'v2']),
                 new Restriction('r2', ['v3', 'v4']),
-            ])]
+            ], "rw")]
         },
 
         {
@@ -67,7 +72,7 @@ describe('isAllowed', () => {
             scopes: [new Scope('a', [
                 new Restriction('r1', ['v1', 'v2']),
                 new Restriction('r2', ['v3', 'v4']),
-            ])]
+            ], "rw")]
         },
 
         {
@@ -76,14 +81,14 @@ describe('isAllowed', () => {
             scopes: [new Scope('a', [
                 new Restriction('r1', ['v1', 'v2']),
                 new Restriction('r2', ['v3', 'v4']),
-            ])]
+            ], "rw")]
         },
     ];
 
     testCases.forEach(({ scopes, resource, restrictions, expect }, i) => {
 
         let fn = it;
-        const multipleRestrictions = restrictions && Object.keys(restrictions) > 1;
+        const multipleRestrictions = restrictions && Object.keys(restrictions).length > 1;
         const multipleScopes = scopes.some(scope => scope.restrictions.length > 1);
         const shouldThrow = multipleRestrictions || multipleScopes;
 
