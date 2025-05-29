@@ -26,8 +26,7 @@ async function isScopeRestrictionOK(
 
     // Handle function-based target restrictions (sync or async)
     if (typeof targetDetail === 'function') {
-        const result = targetDetail(scopeRestrictionValue);
-        return result instanceof Promise ? await result : result;
+        return  targetDetail(scopeRestrictionValue);
     }
 
     // Handle plain value-based target restrictions
