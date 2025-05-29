@@ -10,7 +10,8 @@
   ],
   "scripts": {
     "test": "mocha --require ts-node/register tests/**/*.ts",
-    "build": "tsc"
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
   },
   "engines": {
     "node": "^18.17.0 || >=20.5.0",
