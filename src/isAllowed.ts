@@ -1,69 +1,95 @@
 'use strict';
 
-// Define types for better clarity and type safety
-export type ScopeValue = string | number | (string | number)[];
+export type RestrictionValue = string | number | (string | number)[];
+
+export type CustomRestrictionHandler = (scopeVal: RestrictionValue) => boolean |  Promise<boolean>;
 
 export interface TargetRestrictions {
-    [key: string]: ScopeValue;
+    [key: string]: RestrictionValue | CustomRestrictionHandler;
 }
 
-// Assuming scope structure from Scope.ts: [string, string, FormattedRestrictions]
-// where FormattedRestrictions is { [key: string]: ScopeValue }
+type ScopeTuple = [string, string, { [key: string]: RestrictionValue }];
 
-type ScopeTuple = [string, string, { [key: string]: ScopeValue }];
-
-function asArray(value: ScopeValue | undefined | null): ScopeValue[] {
+function asArray(value: RestrictionValue | undefined | null): RestrictionValue[] {
     if (!value) {
         return [];
     }
     return Array.isArray(value) ? value : [value];
 }
 
-function isScopeRestrictionOK(
+async function isScopeRestrictionOK(
     scopeRestrictionName: string,
-    scopeRestrictionValue: ScopeValue,
+    scopeRestrictionValue: RestrictionValue,
     targetRestrictions: TargetRestrictions
-): boolean {
-    const targetValues = asArray(targetRestrictions[scopeRestrictionName]);
+): Promise<boolean> {
+    const targetDetail = targetRestrictions[scopeRestrictionName];
+
+    // Handle function-based target restrictions (sync or async)
+    if (typeof targetDetail === 'function') {
+        return  targetDetail(scopeRestrictionValue);
+    }
+
+    // Handle plain value-based target restrictions
+    const targetValues = asArray(targetDetail as RestrictionValue | undefined | null);
     const scopeValues = asArray(scopeRestrictionValue);
 
-    // If target has specific values for this restriction, all must be present in the scope's allowed values
     if (targetValues.length && scopeValues.length) {
         return targetValues.every(value => scopeValues.includes(value));
     }
-    // is field limited at all?
+    // If target has no specific values for this restriction, or scope has no values,
+    // it's considered met if the scope doesn't impose any specific values (empty scopeValues).
     return scopeValues.length === 0;
 }
 
+// Helper function to check if all restrictions for a single scope are met against the target restrictions.
+async function _areAllScopeRestrictionsMet(
+    scopeOwnRestrictions: { [key: string]: RestrictionValue },
+    targetRestrictions: TargetRestrictions
+): Promise<boolean> {
+    for (const [scopeRestrictionName, scopeRestrictionValue] of Object.entries(scopeOwnRestrictions)) {
+        const isOk = await isScopeRestrictionOK(scopeRestrictionName, scopeRestrictionValue, targetRestrictions);
+        if (!isOk) {
+            return false; // If any restriction is not met, this scope is not a match.
+        }
+    }
+    return true; // All restrictions for this scope are met.
+}
+
 /**
- * @todo read and write restrictions
+ * Checks if an action is allowed based on the provided scopes and target restrictions.
+ * Supports synchronous and asynchronous function-based target restrictions.
  *
  * @param {ScopeTuple[]} scopes
  * @param {string} targetResource
  * @param {TargetRestrictions} [targetRestrictions={}]
+ * @returns {Promise<boolean>} True if allowed, false otherwise.
  */
-export function isAllowed(
+export async function isAllowed(
     scopes: ScopeTuple[],
     targetResource: string,
     targetRestrictions: TargetRestrictions = {}
-): boolean {
+): Promise<boolean> {
     const multipleTargetRestrictions = Object.keys(targetRestrictions).length > 1;
-    const multipleRestrictions = scopes.some(scope => Object.keys(scope[2]).length > 1);
+    const multipleRestrictionsInScopes = scopes.some(scope => Object.keys(scope[2]).length > 1);
 
-    if (multipleTargetRestrictions || multipleRestrictions) {
+    // Current implementation limitation: does not support multiple restrictions.
+    if (multipleTargetRestrictions || multipleRestrictionsInScopes) {
         throw Error('Multiple restrictions not implemented yet');
     }
 
-    return scopes.some(([scopeResource, methods, scopeRestrictions]) => {
+    // Iterate through each scope to find if any grants permission.
+    for (const [scopeResource, /* methods */, scopeOwnRestrictions] of scopes) {
+        // Skip scopes that are not for the target resource.
         if (scopeResource !== targetResource) {
-            return false;
+            continue;
         }
 
-        // Check if all target restrictions are satisfied by the current scope
-        return Object.entries(scopeRestrictions).every(
-            ([scopeRestrictionName, scopeRestrictionValue]) =>
-                isScopeRestrictionOK(scopeRestrictionName, scopeRestrictionValue, targetRestrictions)
-        );
-    });
-}
+        // Check if all restrictions defined in the current scope are met by the target.
+        if (await _areAllScopeRestrictionsMet(scopeOwnRestrictions, targetRestrictions)) {
+            return true; // Found a scope that satisfies all its restrictions for the target.
+        }
+    }
 
+    // No scope satisfied the conditions.
+    return false;
+}
