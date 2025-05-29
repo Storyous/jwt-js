@@ -1,6 +1,6 @@
 {
   "name": "@storyous/storyous-jwt",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "private": false,
   "main": "./dist/src/index.js",
   "types": "./dist/src/index.d.ts",
